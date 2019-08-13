@@ -1,0 +1,20 @@
+{{- if and .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "mongo.fullname" . }}-pvc
+  labels:
+    app.kubernetes.io/name: {{ include "mongo.name" . }}
+    helm.sh/chart: {{ include "mongo.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+  accessModes:
+  {{- range .Values.persistence.accessModes }}
+  - {{ . | quote }}
+  {{- end }}
+  storageClassName: ""
+{{- end }}
